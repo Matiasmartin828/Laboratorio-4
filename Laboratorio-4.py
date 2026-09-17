@@ -9,36 +9,104 @@ import tkinter as tk
 
 def calcular_determinante_a():
     try:
-        asd=0
-    except ValueError:
-        print("Error")
+        d = dimension.get()                                                                         #Consulto el valor de la dimensión de la matriz A
+        if d == 2:                                                                                  #Si la dimensión es 2 calculo el determinante de una matriz 2x2
+            resultado = (float(matrizA[0][0].get()) * float(matrizA[1][1].get())
+                       - float(matrizA[0][1].get()) * float(matrizA[1][0].get()))
+            valor_determinante.config(state="normal") 
+            valor_determinante.delete(0, tk.END)                                                     
+            valor_determinante.insert(0, str(resultado))                                                                      
+            valor_determinante.config(state="readonly")
+
+        elif d == 3:                                                                                #Si la dimensión es 3 calculo el determinante de una matriz 3x3
+            resultado = (float(matrizA[0][0].get()) * float(matrizA[1][1].get()) * float(matrizA[2][2].get())
+                        + float(matrizA[0][1].get()) * float(matrizA[1][2].get()) * float(matrizA[2][0].get())
+                        + float(matrizA[0][2].get()) * float(matrizA[1][0].get()) * float(matrizA[2][1].get())
+                        - float(matrizA[0][2].get()) * float(matrizA[1][1].get()) * float(matrizA[2][0].get())
+                        - float(matrizA[0][0].get()) * float(matrizA[1][2].get()) * float(matrizA[2][1].get())
+                        - float(matrizA[0][1].get()) * float(matrizA[1][0].get()) * float(matrizA[2][2].get()))
+            valor_determinante.config(state="normal")
+            valor_determinante.delete(0, tk.END)                                                     
+            valor_determinante.insert(0, str(resultado))
+            valor_determinante.config(state="readonly")        
+
+        elif d == 4:                                                                                #Si la dimensión es 4 calculo el determinante de una matriz 4x4
+            a, b, c, d = float(matrizA[0][0].get()), float(matrizA[0][1].get()), float(matrizA[0][2].get()), float(matrizA[0][3].get())
+            e, f, g, h = float(matrizA[1][0].get()), float(matrizA[1][1].get()), float(matrizA[1][2].get()), float(matrizA[1][3].get())
+            i, j, k, l = float(matrizA[2][0].get()), float(matrizA[2][1].get()), float(matrizA[2][2].get()), float(matrizA[2][3].get())
+            m, n, o, p = float(matrizA[3][0].get()), float(matrizA[3][1].get()), float(matrizA[3][2].get()), float(matrizA[3][3].get())
+            det1 = (f*k*p + g*l*n + h*j*o - h*k*n - f*l*o - g*j*p)
+            det2 = (e*k*p + g*l*m + h*i*o - h*k*m - e*l*o - g*i*p)
+            det3 = (e*j*p + f*l*m + h*i*n - h*j*m - e*l*n - f*i*p)
+            det4 = (e*j*o + f*k*m + g*i*n - g*j*m - e*k*n - f*i*o)
+            resultado = a*det1 - b*det2 + c*det3 - d*det4
+            valor_determinante.config(state="normal")
+            valor_determinante.delete(0, tk.END)                                                     
+            valor_determinante.insert(0, str(resultado))
+            valor_determinante.config(state="readonly")  
+
+    except:
+        print("Error al calcular el determinante.")
 
 def calcular_x():
     try:
         asd=0
-    except ValueError:
-        print("Error")
+    except:
+        print("Error al calcular el vector x.")
+
+def lugares_innecesarios():
+    try:
+        d = dimension.get()                                                                         #Consulto el valor de la dimensión de la matriz A
+        for i in range(4):                                                                          #Recorro las filas de la matriz A y el vector b
+            for j in range(4):                                                                      #Recorro las columnas de la matriz A
+                if i >= d or j >= d:                                                                #Si la fila o columna es mayor o igual a la dimensión, deshabilito el campo de entrada
+                    matrizA[i][j].config(state="readonly")
+                else:                                                                               #Si no, habilito el campo de entrada
+                    matrizA[i][j].config(state="normal")
+
+            if i >= d:                                                                              #Si la fila es mayor o igual a la dimensión, deshabilito el campo de entrada del vector b
+                matrizB[i].config(state="readonly")
+            else:                                                                                   #Si no, habilito el campo de entrada del vector b
+                matrizB[i].config(state="normal")
+    except:
+        print("Error al desabilitar los lugares no utilizados.")
 
 def borrar_valores():
     try:
-        asd=0
-    except ValueError:
-        print("Error")
+        for i in range(4):                                                                          #Borro los valores de la matriz A
+            for j in range(4):
+                matrizA[i][j].delete(0, tk.END)
+
+        for i in range(4):                                                                          #Borro los valores del vector b
+            matrizB[i].delete(0, tk.END)
+
+        for i in range(4):                                                                          #Borro los valores del vector x
+            matrizResultado[i].config(state="normal")
+            matrizResultado[i].delete(0, tk.END)
+            matrizResultado[i].config(state="readonly")
+        valor_determinante.config(state="normal")                                                   #Borro el valor del determinante de la matriz A
+        valor_determinante.delete(0, tk.END)
+        valor_determinante.config(state="readonly")
+    except:
+        print("Error al eliminar los valores.")
 
 ventana = tk.Tk()                                                                                   #Creo la ventana principal
+matrizA = []                                                                                        #Creo una lista vacía para almacenar los campos de las matrices                          
+matrizB = []
+matrizResultado = []
 ventana.title("Resolución de sistemas de ecuaciones lineales mediante la Regla de Cramer")
 ventana.geometry("500x300")
-marco_principal = tk.Frame(ventana, padx=20, pady=20)                                       
+marco_principal = tk.Frame(ventana, padx=10, pady=20)                                       
 marco_principal.pack()
 frame_dimension = tk.LabelFrame(marco_principal, text="Dimensión", padx=10, pady=10)
-frame_dimension.grid(row=0, column=0, sticky="we", padx=(0, 20))                                    #Creo un marco para los botones de la dimensión de la matriz
+frame_dimension.grid(row=0, column=0, sticky="we", padx=(0, 10))                                    #Creo un marco para los botones de la dimensión de la matriz
 dimension = tk.IntVar()                                                                             #Creo la variable de control para los botones de la dimensión de la matriz
 dimension.set(3)
-tk.Radiobutton(frame_dimension, text="2 x 2", variable=dimension, value=2).pack(anchor="w")         #Creo los botones para seleccionar la dimensión de la matriz alineados a la izquierda
-tk.Radiobutton(frame_dimension, text="3 x 3", variable=dimension, value=3).pack(anchor="w")
-tk.Radiobutton(frame_dimension, text="4 x 4", variable=dimension, value=4).pack(anchor="w")
+tk.Radiobutton(frame_dimension, text="2 x 2", variable=dimension, value=2, command=lugares_innecesarios).pack(anchor="w")         #Creo los botones para seleccionar la dimensión de la matriz alineados a la izquierda
+tk.Radiobutton(frame_dimension, text="3 x 3", variable=dimension, value=3, command=lugares_innecesarios).pack(anchor="w")
+tk.Radiobutton(frame_dimension, text="4 x 4", variable=dimension, value=4, command=lugares_innecesarios).pack(anchor="w")
 texto_matrices = tk.Frame(marco_principal)                                                          #Creo un marco para los textos de las matrices y los campos de entrada
-texto_matrices.grid(row=0, column=1)
+texto_matrices.grid(row=0, column=1, padx=(0, 10))
 
 tk.Label(texto_matrices, text="A", font=("Arial", 12, "bold")).grid(row=0, column=1, columnspan=4)  #Creo los textos de las matrices A, b y x en arial 12 y en negrita
 tk.Label(texto_matrices, text="b", font=("Arial", 12, "bold")).grid(row=0, column=6)
@@ -46,10 +114,6 @@ tk.Label(texto_matrices, text="x", font=("Arial", 12, "bold")).grid(row=0, colum
 
 for i in range(4):                                                                                  #Creo los textos de las columnas de la matriz A y el vector b
     tk.Label(texto_matrices, text=str(i)).grid(row=1, column=i+1)
-
-matrizA = []                                                                                        #Creo una lista vacía para almacenar los campos de las matrices                          
-matrizB = []
-matrizResultado = []
 
 for i in range(4):                                                                                  #Creo los campos de entrada para la matriz A, el vector b y el vector x
     tk.Label(texto_matrices, text=str(i)).grid(row=i+2, column=0)
@@ -71,7 +135,7 @@ for i in range(4):                                                              
     valor_x.grid(row=i+2, column=8, padx=2, pady=2)
     matrizResultado.append(valor_x)                                                                 #Apendo los valores ingresados a la lista del vector x
 
-frame_inferior = tk.Frame(marco_principal, pady=10)
+frame_inferior = tk.Frame(marco_principal)                                                                #Creo un marco para los botones de calcular y borrar valores
 frame_inferior.grid(row=1, column=0, columnspan=2)                                                                           
 
 tk.Label(frame_inferior, text="Ayuda: el sistema de ecuaciones permite calcular A.x = b\nSe deben cargar los valores de A y b y luego,\nal calcular, se obtienen los valores de x", justify="center").pack(pady=10)
@@ -84,6 +148,9 @@ boton_calcular_x = tk.Button(frame_botones, text="Calcular", command=calcular_x)
 boton_calcular_x.grid(row=0, column=1, padx=10)
 frame_determinante = tk.Frame(frame_inferior, pady=10)
 frame_determinante.pack()
+boton_determinante_label = tk.Label(frame_determinante, text="Determinante: ").grid(row=0, column=0, padx=10)             #Creo el texto para el botón de calcular el determinante de la matriz A
+valor_determinante = tk.Entry(frame_determinante, width=10, justify="left", state="readonly")                 #Creo el campo de entrada para mostrar el valor del determinante de la matriz A
+valor_determinante.grid(row=0, column=1)
 boton_calcular_determinante = tk.Button(frame_determinante, text="Calcular det.", command=calcular_determinante_a)        #Creo el botón para calcular el determinante de la matriz A
 boton_calcular_determinante.grid(row=0, column=2, padx=10)
 
