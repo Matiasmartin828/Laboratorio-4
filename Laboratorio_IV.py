@@ -1,3 +1,6 @@
+# LABORATORIO 4
+# AUTORES MATÍAS MARTIN E IVO DI MARCO
+# LINK DEL REPOSITORIO DE GITHUB: https://github.com/Matiasmartin828/Laboratorio-4.git
 
 import customtkinter as ctk
 import numpy as np
